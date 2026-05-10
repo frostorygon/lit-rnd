@@ -1,0 +1,35 @@
+{
+  "name": "lit-rnd",
+  "version": "1.0.0",
+  "description": "Lit web component R&D project following open-wc conventions",
+  "type": "module",
+  "main": "src/js/index.js",
+  "module": "src/js/index.js",
+  "scripts": {
+    "start": "wds --config web-dev-server.config.mjs",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "test": "wtr --config web-test-runner.config.mjs",
+    "test:watch": "wtr --config web-test-runner.config.mjs --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "lit",
+    "web-components",
+    "open-wc"
+  ],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.1",
+  "dependencies": {
+    "lit": "^3.3.2"
+  },
+  "devDependencies": {
+    "@esm-bundle/chai": "4.3.4-fix.0",
+    "@open-wc/testing": "^4.0.0",
+    "@web/dev-server": "^0.4.6",
+    "@web/dev-server-esbuild": "^1.0.5",
+    "@web/test-runner": "^0.20.2",
+    "typescript": "^6.0.3"
+  }
+}
