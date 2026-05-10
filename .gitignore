@@ -3,3 +3,5 @@ node_modules/
 # Internal analysis (plaintext contains proprietary references)
 docs/lit-patterns-and-when-to-use-what.md
 !docs/lit-patterns-and-when-to-use-what.md.b64
+docs/account-closure-fixes.md
+!docs/account-closure-fixes.md.b64
