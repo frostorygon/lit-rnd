@@ -1,5 +1,5 @@
 node_modules/
 
-# Internal analysis (contains proprietary references)
+# Internal analysis (plaintext contains proprietary references)
 docs/lit-patterns-and-when-to-use-what.md
-docs/lit-patterns-and-when-to-use-what.md.b64
+!docs/lit-patterns-and-when-to-use-what.md.b64
