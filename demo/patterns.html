@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pattern Improvement — ErrorScreen Variants</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        background: #f5f5f7;
+        color: #1a1a2e;
+        padding: 32px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      h1 { font-size: 28px; margin-bottom: 8px; }
+
+      .subtitle {
+        color: #777;
+        margin-bottom: 24px;
+        font-size: 15px;
+      }
+
+      .intro {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 32px;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .intro code {
+        background: #f0f0f0;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 13px;
+      }
+
+      /* Error type selector */
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 28px;
+        align-items: center;
+      }
+
+      .controls label {
+        font-weight: 600;
+        font-size: 14px;
+        margin-right: 8px;
+      }
+
+      .controls button {
+        padding: 6px 14px;
+        border: 2px solid #ccc;
+        border-radius: 6px;
+        font-size: 13px;
+        cursor: pointer;
+        background: white;
+        transition: all 0.2s;
+      }
+
+      .controls button.active {
+        border-color: #4361ee;
+        background: #4361ee;
+        color: white;
+      }
+
+      .controls button:hover:not(.active) {
+        border-color: #999;
+      }
+
+      .comparison {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+
+      .option {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .option-header {
+        padding: 12px 16px;
+        font-weight: 700;
+        font-size: 14px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .option-header.a { background: #e8f5e9; color: #2e7d32; }
+      .option-header.b { background: #e3f2fd; color: #1565c0; }
+      .option-header.c { background: #fce4ec; color: #c62828; }
+      .option-header.d { background: #fff8e1; color: #f57f17; }
+      .option-header.e { background: #f3e5f5; color: #7b1fa2; }
+      .option-header.f { background: #e0f2f1; color: #00695c; }
+      .option-header.g { background: #e8eaf6; color: #283593; }
+      .option-header.h { background: #fbe9e7; color: #bf360c; }
+      .option-header.i { background: #f1f8e9; color: #33691e; }
+      .option-header.j { background: #ede7f6; color: #4527a0; }
+      .option-header.k { background: #e0f7fa; color: #006064; }
+      .option-header.l { background: #fce4ec; color: #880e4f; }
+
+      .section-label {
+        grid-column: 1 / -1;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #999;
+        padding-top: 16px;
+        border-top: 1px solid #e0e0e0;
+      }
+
+      .section-label:first-child {
+        border-top: none;
+        padding-top: 0;
+      }
+
+      .option-body {
+        min-height: 500px;
+      }
+
+      .nav-back {
+        margin-bottom: 16px;
+      }
+
+      .nav-back a {
+        color: #4361ee;
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      .nav-back a:hover {
+        text-decoration: underline;
+      }
+
+      .console-hint {
+        margin-top: 20px;
+        padding: 12px 16px;
+        background: #1a1a2e;
+        color: #a0ffa0;
+        border-radius: 8px;
+        font-family: monospace;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      @media (max-width: 1100px) {
+        .comparison {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 600px) {
+        .comparison {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav-back"><a href="/demo/">← Back to main demos</a></div>
+
+    <h1>🔧 Pattern Improvement Comparison</h1>
+    <p class="subtitle">Six approaches to refactoring the ErrorScreen component — same result, different architecture.</p>
+
+    <div class="intro">
+      <strong>What you're looking at:</strong> All six options render the same ErrorScreen UI,
+      but with different internal architectures. Switch the error type below to see them react identically.
+      <br><br>
+      <strong>Open the browser console</strong> to see when <code>[trackError]</code> fires.
+      Notice it fires <strong>once per type change</strong> (in <code>updated()</code>), not on every render.
+    </div>
+
+    <div class="controls">
+      <label>Error Type:</label>
+      <button class="active" data-type="SomethingWentWrong">Something Went Wrong</button>
+      <button data-type="UnableToCloseAccount">Unable to Close</button>
+      <button data-type="LinkedToAnotherAccount">Linked Account</button>
+      <button data-type="RemainingBalance">Remaining Balance</button>
+      <button data-type="TransactionPending">Transaction Pending</button>
+      <button data-type="Success" style="background:#2a9d8f;color:#fff">✓ Success</button>
+    </div>
+
+    <div class="comparison">
+      <div class="section-label">Architectural Patterns (A–C)</div>
+
+      <div class="option">
+        <div class="option-header a">A — Data-Driven Config</div>
+        <div class="option-body">
+          <error-screen-a id="screen-a" error-type="SomethingWentWrong"></error-screen-a>
+        </div>
+      </div>
+
+      <div class="option">
+        <div class="option-header b">B — Sub-Components</div>
+        <div class="option-body">
+          <error-screen-b id="screen-b" error-type="SomethingWentWrong"></error-screen-b>
+        </div>
+      </div>
+
+      <div class="option">
+        <div class="option-header c">C — Controller</div>
+        <div class="option-body">
+          <error-screen-c id="screen-c" error-type="SomethingWentWrong"></error-screen-c>
+        </div>
+      </div>
+
+      <div class="section-label">Readability-First (D–F)</div>
+
+      <div class="option">
+        <div class="option-header d">D — Single File</div>
+        <div class="option-body">
+          <error-screen-d id="screen-d" error-type="SomethingWentWrong"></error-screen-d>
+        </div>
+      </div>
+
+      <div class="option">
+        <div class="option-header e">E — Slot Composition</div>
+        <div class="option-body">
+          <error-screen-e id="screen-e" error-type="SomethingWentWrong"></error-screen-e>
+        </div>
+      </div>
+
+      <div class="option">
+        <div class="option-header f">F — Flat Props</div>
+        <div class="option-body">
+          <error-screen-f-demo id="screen-f" error-type="SomethingWentWrong"></error-screen-f-demo>
+        </div>
+      </div>
+
+      <div class="section-label">Research-Based — Dumb + Template Separated (G–I)</div>
+
+      <div class="option">
+        <div class="option-header g">G — Flat Props + Template</div>
+        <div class="option-body">
+          <error-screen-g-demo id="screen-g" error-type="SomethingWentWrong"></error-screen-g-demo>
+        </div>
+      </div>
+
+      <div class="option">
+        <div class="option-header h">H — Slots + Template</div>
+        <div class="option-body">
+          <error-screen-h-demo id="screen-h" error-type="SomethingWentWrong"></error-screen-h-demo>
+        </div>
+      </div>
+
+      <div class="option">
+        <div class="option-header i">I — Hybrid (Production)</div>
+        <div class="option-body">
+          <error-screen-i-demo id="screen-i" error-type="SomethingWentWrong"></error-screen-i-demo>
+        </div>
+      </div>
+
+      <div class="section-label">StatusScreen — Error + Success Unified (J–L)</div>
+
+      <div class="option">
+        <div class="option-header j">J — Icon via Slot</div>
+        <div class="option-body">
+          <status-screen-j-demo id="screen-j" error-type="SomethingWentWrong"></status-screen-j-demo>
+        </div>
+      </div>
+
+      <div class="option">
+        <div class="option-header k">K — Icon Auto from Variant</div>
+        <div class="option-body">
+          <status-screen-k-demo id="screen-k" error-type="SomethingWentWrong"></status-screen-k-demo>
+        </div>
+      </div>
+
+      <div class="option">
+        <div class="option-header l">L — Icon Auto + Slot Override</div>
+        <div class="option-body">
+          <status-screen-l-demo id="screen-l" error-type="SomethingWentWrong"></status-screen-l-demo>
+        </div>
+      </div>
+    </div>
+
+    <div class="console-hint">
+      💡 Open DevTools Console (F12) to see <code>[trackError]</code> messages.<br>
+      Switch error types — each fires exactly once, not on every render.
+    </div>
+
+    <script type="module">
+      import '../src/pattern-improvement/option-a-data-driven/ErrorScreen.js';
+      import '../src/pattern-improvement/option-b-sub-components/ErrorScreen.js';
+      import '../src/pattern-improvement/option-c-controller/ErrorScreen.js';
+      import '../src/pattern-improvement/option-d-readable/ErrorScreen.js';
+      import '../src/pattern-improvement/option-e-slots/ErrorScreen.js';
+      import '../src/pattern-improvement/option-f-flat-props/ErrorScreenFDemo.js';
+      import '../src/pattern-improvement/option-g-flat-template/ErrorScreenGDemo.js';
+      import '../src/pattern-improvement/option-h-slots-template/ErrorScreenHDemo.js';
+      import '../src/pattern-improvement/option-i-hybrid/ErrorScreenIDemo.js';
+      import '../src/pattern-improvement/option-j-icon-slot/StatusScreenJDemo.js';
+      import '../src/pattern-improvement/option-k-icon-auto/StatusScreenKDemo.js';
+      import '../src/pattern-improvement/option-l-icon-hybrid/StatusScreenLDemo.js';
+
+      const buttons = document.querySelectorAll('.controls button');
+      const screens = ['a','b','c','d','e','f','g','h','i','j','k','l'].map(id => document.getElementById(`screen-${id}`));
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          buttons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          screens.forEach(s => s.setAttribute('error-type', btn.dataset.type));
+        });
+      });
+    </script>
+  </body>
+</html>

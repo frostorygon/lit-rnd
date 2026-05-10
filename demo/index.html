@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lit RnD — Component Demos</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        background: #f5f5f7;
+        color: #1a1a2e;
+        padding: 32px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        font-size: 28px;
+        margin-bottom: 8px;
+      }
+
+      .subtitle {
+        color: #777;
+        margin-bottom: 16px;
+        font-size: 15px;
+      }
+
+      /* Language switcher */
+      .lang-switch {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 28px;
+      }
+
+      .lang-switch button {
+        padding: 8px 20px;
+        border: 2px solid #4361ee;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: white;
+        color: #4361ee;
+      }
+
+      .lang-switch button.active {
+        background: #4361ee;
+        color: white;
+      }
+
+      .lang-switch button:hover:not(.active) {
+        background: #eef0ff;
+      }
+
+      .lang-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        vertical-align: middle;
+        margin-left: 8px;
+      }
+
+      .lang-badge.ts {
+        background: #3178c6;
+        color: white;
+      }
+
+      .lang-badge.js {
+        background: #f7df1e;
+        color: #333;
+      }
+
+      section {
+        margin-bottom: 32px;
+      }
+
+      section h2 {
+        font-size: 18px;
+        margin-bottom: 12px;
+        color: #4361ee;
+        border-bottom: 2px solid #4361ee;
+        padding-bottom: 4px;
+        display: inline-block;
+      }
+
+      .demo-area {
+        margin-top: 8px;
+      }
+
+      .source-hint {
+        margin-top: 6px;
+        font-size: 12px;
+        color: #999;
+        font-family: monospace;
+      }
+
+      /* Theme override example */
+      my-greeting.themed {
+        --greeting-bg: #1a1a2e;
+        --greeting-heading-color: #e0e0e0;
+        --greeting-border-color: #333;
+        --greeting-btn-bg: #e63946;
+        --greeting-btn-bg-hover: #c5303c;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🔥 Lit Component Demos</h1>
+    <p class="subtitle">Each section demos a Lit/open-wc pattern. Switch between JS and TS source below.</p>
+
+    <div class="lang-switch">
+      <button id="btn-js" onclick="switchLang('js')">JavaScript</button>
+      <button id="btn-ts" onclick="switchLang('ts')" class="active">TypeScript</button>
+    </div>
+
+    <noscript><p>JavaScript is required to run these demos.</p></noscript>
+
+    <div id="demos"><!-- populated by script --></div>
+
+    <script type="module">
+      // Default to TypeScript source
+      let currentLang = 'ts';
+
+      // Build the demo HTML — components re-register, so we use a full reload
+      function renderDemos() {
+        const langBadge = currentLang === 'ts'
+          ? '<span class="lang-badge ts">TS</span>'
+          : '<span class="lang-badge js">JS</span>';
+        const srcDir = `src/${currentLang}`;
+
+        document.getElementById('demos').innerHTML = `
+          <section>
+            <h2>1. my-greeting — Properties & Events ${langBadge}</h2>
+            <div class="demo-area">
+              <my-greeting name="Lit Developer"></my-greeting>
+            </div>
+            <p class="source-hint">${srcDir}/components/my-greeting.${currentLang === 'ts' ? 'ts' : 'js'}</p>
+          </section>
+
+          <section>
+            <h2>2. my-greeting — Themed via CSS Custom Props ${langBadge}</h2>
+            <div class="demo-area">
+              <my-greeting class="themed" name="Dark Theme"></my-greeting>
+            </div>
+          </section>
+
+          <section>
+            <h2>3. my-card — Slots & Content Projection ${langBadge}</h2>
+            <div class="demo-area">
+              <my-card>
+                <h2 slot="header">Custom Header via Slot</h2>
+                <p>This is the default slot content — the card body.</p>
+                <p>Multiple elements can go into the default slot.</p>
+                <div slot="actions">
+                  <button onclick="alert('Save clicked')">Save</button>
+                  <button onclick="alert('Cancel clicked')">Cancel</button>
+                </div>
+              </my-card>
+            </div>
+            <p class="source-hint">${srcDir}/components/my-card.${currentLang === 'ts' ? 'ts' : 'js'}</p>
+          </section>
+
+          <section>
+            <h2>4. my-card — Fallback Content ${langBadge}</h2>
+            <div class="demo-area">
+              <my-card header-title="Fallback Demo">
+                <p>Only the default slot is filled. Header uses <code>header-title</code> attribute, footer shows fallback.</p>
+              </my-card>
+            </div>
+          </section>
+
+          <section>
+            <h2>5. my-counter — Reactive Controller ${langBadge}</h2>
+            <div class="demo-area">
+              <my-counter></my-counter>
+            </div>
+            <p class="source-hint">${srcDir}/controllers/counter-controller.${currentLang === 'ts' ? 'ts' : 'js'}</p>
+          </section>
+
+          <section>
+            <h2>6. my-todo — State, Lists, Conditionals, Forms ${langBadge}</h2>
+            <div class="demo-area">
+              <my-todo heading="My Task List"></my-todo>
+            </div>
+            <p class="source-hint">${srcDir}/components/my-todo.${currentLang === 'ts' ? 'ts' : 'js'}</p>
+          </section>
+        `;
+      }
+
+      // Switching requires a full page reload since custom elements can only be registered once
+      window.switchLang = function (lang) {
+        if (lang === currentLang) return;
+        const url = new URL(window.location);
+        url.searchParams.set('lang', lang);
+        window.location = url;
+      };
+
+      // Read lang from URL param
+      const params = new URLSearchParams(window.location.search);
+      currentLang = params.get('lang') || 'ts';
+
+      // Update button states
+      document.getElementById(`btn-${currentLang}`).classList.add('active');
+      document.getElementById(`btn-${currentLang === 'ts' ? 'js' : 'ts'}`).classList.remove('active');
+
+      // Import from the selected source directory
+      const ext = currentLang === 'ts' ? 'ts' : 'js';
+      await import(`../src/${currentLang}/components/my-greeting.${ext}`);
+      await import(`../src/${currentLang}/components/my-card.${ext}`);
+      await import(`../src/${currentLang}/components/my-counter.${ext}`);
+      await import(`../src/${currentLang}/components/my-todo.${ext}`);
+
+      renderDemos();
+    </script>
+  </body>
+</html>
