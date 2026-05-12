@@ -1,0 +1,64 @@
+import { css } from 'lit';
+
+export const statusScreenStyles = css`
+  :host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 32px 24px;
+    font-family: system-ui, -apple-system, sans-serif;
+    min-height: 400px;
+    --_accent: #555;
+  }
+
+  :host([variant='error'])   { --_accent: #e63946; }
+  :host([variant='warning']) { --_accent: #f9a825; }
+  :host([variant='info'])    { --_accent: #0077b6; }
+  :host([variant='success']) { --_accent: #2a9d8f; }
+
+  .accent-bar {
+    width: 48px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--_accent);
+    margin-top: 16px;
+  }
+
+  .icon-area {
+    width: 160px;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .heading {
+    font-size: 19px;
+    font-weight: 700;
+    margin: 12px 0 0;
+    color: var(--_accent);
+  }
+
+  .description {
+    font-size: 16px;
+    margin: 8px 0 0;
+    color: #555;
+  }
+
+  /* Slot-based styles */
+  ::slotted([slot='icon'])         { display: block; width: 160px; }
+  ::slotted([slot='heading'])      { display: block; font-size: 19px; font-weight: 700; margin: 12px 0 0; color: var(--_accent); }
+  ::slotted([slot='description'])  { display: block; font-size: 16px; margin: 8px 0 0; color: #555; }
+  ::slotted([slot='notification']) { display: block; margin-top: 24px; width: 100%; text-align: left; }
+
+  .action-area {
+    margin-top: auto;
+    width: 100%;
+  }
+
+  ::slotted([slot='action']) {
+    display: block;
+    width: 100%;
+  }
+`;
